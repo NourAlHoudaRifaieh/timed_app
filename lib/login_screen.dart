@@ -15,7 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-   bool  isChecked = false;
+  bool isChecked = false;
 
   @override
   void initState() {
@@ -28,6 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _usernameController.dispose();
     _passwordController.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +61,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         prefixIcon: Icon(Icons.person_sharp),
                         controller: _usernameController,
                         hint: 'Enter username',
-                        // obscureText: obscureText,
                         fillColor: Colors.grey.shade400,
                     ),
                     SizedBox(height:10),
