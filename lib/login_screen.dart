@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:timed_app/api_service.dart';
 import 'package:timed_app/widgets/custom_form_field.dart';
+import 'main_page.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -16,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool isChecked = false;
+  final ApiService _apiService = ApiService();
 
   @override
   void initState() {
@@ -24,9 +27,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
+    super.dispose();
   }
 
 
@@ -95,7 +98,25 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: double.infinity,
                       height: 45,
                       child: ElevatedButton(
-                          onPressed: (){},
+                          onPressed: ()async{
+                            if(_formKey.currentState!.validate()){
+                              final success = await _apiService.saveLogin(
+                                _usernameController.text.trim(),
+                                _passwordController.text.trim(),
+                              );
+                              if(!mounted) return;
+                              if(success){
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context)=> MainPage()),
+                                );
+                              }else{
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Failed to save data, try again'))
+                                );
+                              }
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
                             backgroundColor: Colors.indigo,
