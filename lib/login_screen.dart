@@ -1,3 +1,6 @@
+// import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
+
+
 import 'package:flutter/material.dart';
 import 'package:timed_app/api_service.dart';
 import 'package:timed_app/widgets/custom_form_field.dart';
@@ -20,6 +23,11 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isChecked = false;
   final ApiService _apiService = ApiService();
 
+
+  final Map<String, String> _predefinedUsers ={
+    'user1': 'pass1',
+    'user2': 'pass2'
+  };
   @override
   void initState() {
     super.initState();
@@ -50,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Text('Sign in to continue to your dashboard',
               style: TextStyle(fontSize: 14,color: Colors.grey.shade600)
             ),
+            SizedBox(height:20),
             Padding(
               padding: EdgeInsets.all(10),
               child: Form(
@@ -99,22 +108,34 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 45,
                       child: ElevatedButton(
                           onPressed: ()async{
-                            if(_formKey.currentState!.validate()){
-                              final success = await _apiService.saveLogin(
-                                _usernameController.text.trim(),
-                                _passwordController.text.trim(),
-                              );
-                              if(!mounted) return;
-                              if(success){
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(builder: (context)=> MainPage()),
-                                );
-                              }else{
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Failed to save data, try again'))
-                                );
+                            if(_formKey.currentState!.validate()) {
+                              final enteredUser = _usernameController.text
+                                  .trim();
+                              final enteredPass = _passwordController.text;
+                              if (_predefinedUsers.containsKey(enteredUser) && _predefinedUsers[enteredUser] == enteredPass) {
+                                // final success = await _apiService.saveLogin(
+                                //   _usernameController.text.trim(),
+                                //   _passwordController.text.trim(),
+                                // );
+                                final success = await _apiService.saveLogin(enteredUser, enteredPass);
+                                if (!mounted) return;
+                                if (success) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MainPage()),
+                                  );
+                                }else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(
+                                          'Failed to save data, try again'))
+                                  );
+                                }
                               }
+                            }else{
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Invalid username or password')),
+                              );
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -129,6 +150,41 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Text('Login',
                             style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)
                           ),
+                      ),
+                    ),
+                    SizedBox(height:50),
+                    SizedBox(
+                      height: 200,
+                      width:500,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text('Predefined username and password to login',
+                              style: TextStyle(fontSize:16,fontWeight: FontWeight.bold, color: Colors.indigo)
+                          ),
+                          SizedBox(height:10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('User 1:',
+                                  style: TextStyle(fontSize:14, fontWeight:FontWeight.bold, color: Colors.indigo)
+                              ),
+                              SizedBox(width:7),
+                              Text('user1 / pass1'),
+                            ],
+                          ),
+                          SizedBox(height:5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('User 2:',
+                                  style: TextStyle(fontSize:14, fontWeight:FontWeight.bold, color: Colors.indigo)
+                              ),
+                              SizedBox(width:7),
+                              Text('user2 / pass2'),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ],
