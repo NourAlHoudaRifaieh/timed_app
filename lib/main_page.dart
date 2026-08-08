@@ -1,4 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:timed_app/screens/gallery_screen.dart';
+import 'package:timed_app/screens/list_view_screen.dart';
+import 'package:timed_app/screens/network_service_screen.dart';
+import 'package:timed_app/screens/timer_screen.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({Key? key}) : super(key: key);
@@ -11,6 +17,30 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex =0;
+  String _headerTitle = 'Main Page';
+
+  Widget _openPageBody(){
+    switch(_selectedIndex){
+      case 0:
+        return Center(
+          child: Text('Welcome to Main Page', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
+        );
+      case 1:
+        return TimerScreen();
+      case 2:
+        return ListViewScreen();
+      case 3:
+        return GalleryScreen();
+      case 4:
+        return NetworkServiceScreen();
+      default:
+        return Center(
+          child: Text('Welcome to Main Page', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
+        );
+    }
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -26,7 +56,10 @@ class _MainPageState extends State<MainPage> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text('Main page '),
+        title: Text(
+            _headerTitle,
+            style: TextStyle(fontSize:25, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
         leading: Builder(
             builder: (context){
               return IconButton(
@@ -38,6 +71,7 @@ class _MainPageState extends State<MainPage> {
             }
         ),
       ),
+      body: _openPageBody(),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -52,63 +86,77 @@ class _MainPageState extends State<MainPage> {
                children: [
                  // Icon(Icons.person, color: Colors.white, size: 30),
                  // SizedBox(height:10),
-                 Text('Timed App', style: TextStyle(fontSize:20, fontWeight: FontWeight.bold, color: Colors.white)),
+                 Text(
+                     'Timed App',
+                     style: TextStyle(fontSize:20, fontWeight: FontWeight.bold, color: Colors.white)),
                ],
               ),
             ),
             ListTile(
-              selected:  _selectedIndex == 0,
-              leading: Icon(Icons.timer, color: _selectedIndex == 0 ? Colors.indigo : Colors.grey, size:22, fontWeight: FontWeight.bold),
+              selected:  _selectedIndex == 1,
+              leading: Icon(Icons.timer, color: _selectedIndex == 1 ? Colors.indigo : Colors.grey, size:22, fontWeight: FontWeight.bold),
               title: Text(
                   'Timer',
-                  style: TextStyle(
-                      fontSize:20,
-                      color: _selectedIndex == 0 ? Colors.indigo : Colors.black)),
-              onTap: (){
-                setState(() {
-                  _selectedIndex =0;
-                });
-              },
-            ),
-            ListTile(
-              selected:  _selectedIndex == 1,
-              leading: Icon(Icons.list, color: _selectedIndex == 1 ? Colors.indigo : Colors.grey, size:22, fontWeight: FontWeight.bold),
-              title: Text(
-                  'List View',
                   style: TextStyle(
                       fontSize:20,
                       color: _selectedIndex == 1 ? Colors.indigo : Colors.black)),
               onTap: (){
                 setState(() {
                   _selectedIndex =1;
+                  _headerTitle =" Timer Screen";
+                  Navigator.pop(context);
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => TimerScreen()),
+                  // );
                 });
               },
             ),
             ListTile(
               selected:  _selectedIndex == 2,
-              leading: Icon(Icons.photo_size_select_actual_outlined, color: _selectedIndex == 2 ? Colors.indigo : Colors.grey, size:22, fontWeight: FontWeight.bold),
+              leading: Icon(Icons.list, color: _selectedIndex == 2 ? Colors.indigo : Colors.grey, size:22, fontWeight: FontWeight.bold),
               title: Text(
-                  'Gallery',
+                  'List View',
                   style: TextStyle(
                       fontSize:20,
                       color: _selectedIndex == 2 ? Colors.indigo : Colors.black)),
               onTap: (){
                 setState(() {
                   _selectedIndex =2;
+                  _headerTitle = "List View";
+                  Navigator.pop(context);
                 });
               },
             ),
             ListTile(
               selected:  _selectedIndex == 3,
-              leading: Icon(Icons.wifi, color: _selectedIndex == 3 ? Colors.indigo : Colors.grey, size:22, fontWeight: FontWeight.bold),
+              leading: Icon(Icons.photo_size_select_actual_outlined, color: _selectedIndex == 3 ? Colors.indigo : Colors.grey, size:22, fontWeight: FontWeight.bold),
               title: Text(
-                  'Network Service',
+                  'Gallery',
                   style: TextStyle(
                       fontSize:20,
                       color: _selectedIndex == 3 ? Colors.indigo : Colors.black)),
               onTap: (){
                 setState(() {
                   _selectedIndex =3;
+                  _headerTitle = "Gallery";
+                  Navigator.pop(context);
+                });
+              },
+            ),
+            ListTile(
+              selected:  _selectedIndex == 4,
+              leading: Icon(Icons.wifi, color: _selectedIndex == 4 ? Colors.indigo : Colors.grey, size:22, fontWeight: FontWeight.bold),
+              title: Text(
+                  'Network Service',
+                  style: TextStyle(
+                      fontSize:20,
+                      color: _selectedIndex == 4 ? Colors.indigo : Colors.black)),
+              onTap: (){
+                setState(() {
+                  _selectedIndex =4;
+                  _headerTitle = "Network Service";
+                  Navigator.pop(context);
                 });
               },
             ),
@@ -124,16 +172,16 @@ class _MainPageState extends State<MainPage> {
               ),
             ),
             ListTile(
-              selected:  _selectedIndex == 4,
-              leading: Icon(Icons.logout, color: _selectedIndex == 4 ? Colors.redAccent : Colors.grey, size:22, fontWeight: FontWeight.bold),
+              selected:  _selectedIndex == 5,
+              leading: Icon(Icons.logout, color: _selectedIndex == 5 ? Colors.redAccent : Colors.grey, size:22, fontWeight: FontWeight.bold),
               title: Text(
                   'Logout',
                   style: TextStyle(
                       fontSize:20,
-                      color: _selectedIndex == 4 ? Colors.redAccent : Colors.black)),
+                      color: _selectedIndex == 5 ? Colors.redAccent : Colors.black)),
               onTap: (){
                 setState(() {
-                  _selectedIndex =4;
+                  _selectedIndex =5;
                 });
               },
             ),
