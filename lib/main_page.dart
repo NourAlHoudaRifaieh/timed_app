@@ -1,13 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:timed_app/login_screen.dart';
 import 'package:timed_app/screens/gallery_screen.dart';
 import 'package:timed_app/screens/list_view_screen.dart';
 import 'package:timed_app/screens/network_service_screen.dart';
 import 'package:timed_app/screens/timer_screen.dart';
 
 class MainPage extends StatefulWidget {
-  MainPage({Key? key}) : super(key: key);
+  final String lastLogin;
+  MainPage({
+    super.key,
+    required this.lastLogin,
+  });
+  // MainPage({Key? key, required  lastLogin}) : super(key: key);
 
   @override
   _MainPageState createState() {
@@ -23,10 +29,10 @@ class _MainPageState extends State<MainPage> {
     switch(_selectedIndex){
       case 0:
         return Center(
-          child: Text('Welcome to Main Page', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
+          child: Text('Welcome to Main Page22', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),),
         );
       case 1:
-        return TimerScreen();
+        return TimerScreen(lastLogin: widget.lastLogin);
       case 2:
         return ListViewScreen();
       case 3:
@@ -71,7 +77,32 @@ class _MainPageState extends State<MainPage> {
             }
         ),
       ),
-      body: _openPageBody(),
+      // body: _openPageBody(),
+       body: Column(
+         children: [
+           Container(
+              height:1,
+              width:double.infinity,
+              decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+                      color: Colors.grey,
+                      width:1,
+                    )
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+           ),
+           Expanded(
+               child: _openPageBody(),
+           ),
+         ],
+       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -103,7 +134,7 @@ class _MainPageState extends State<MainPage> {
               onTap: (){
                 setState(() {
                   _selectedIndex =1;
-                  _headerTitle =" Timer Screen";
+                  _headerTitle =" Timer";
                   Navigator.pop(context);
                   // Navigator.push(
                   //     context,
@@ -180,9 +211,14 @@ class _MainPageState extends State<MainPage> {
                       fontSize:20,
                       color: _selectedIndex == 5 ? Colors.redAccent : Colors.black)),
               onTap: (){
-                setState(() {
-                  _selectedIndex =5;
-                });
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context)=> LoginScreen()),
+                );
+                // setState(() {
+                //   _selectedIndex =5;
+                // });
               },
             ),
           ],

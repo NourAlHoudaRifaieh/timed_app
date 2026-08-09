@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:timed_app/api_service.dart';
 import 'package:timed_app/widgets/custom_form_field.dart';
 import 'main_page.dart';
+import 'package:intl/intl.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -108,6 +109,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 45,
                       child: ElevatedButton(
                           onPressed: ()async{
+                            // DateTime loginTime = DateTime.now();
+                            String loginTime = DateFormat('dd/MM/yyyy  HH:mm').format(DateTime.now());
                             if(_formKey.currentState!.validate()) {
                               final enteredUser = _usernameController.text
                                   .trim();
@@ -123,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => MainPage()),
+                                        builder: (context) => MainPage(lastLogin: loginTime)),
                                   );
                                 }else {
                                   ScaffoldMessenger.of(context).showSnackBar(
