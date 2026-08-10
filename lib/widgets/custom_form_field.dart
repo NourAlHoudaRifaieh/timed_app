@@ -9,6 +9,7 @@ class CustomFormField extends StatelessWidget {
   final bool obscureText;
   final String? Function(String?)? validator;
   final String label;
+  final ValueChanged<String>? onChanged;
 
   CustomFormField({
     super.key,
@@ -19,6 +20,7 @@ class CustomFormField extends StatelessWidget {
     this.obscureText = false,
     required this.fillColor,
     required this.label,
+    this.onChanged,
   });
 
   @override
@@ -56,6 +58,7 @@ class CustomFormField extends StatelessWidget {
             color: Colors.grey.shade600,
           ),
           validator: validator,
+          onChanged: onChanged,
         ),
       ],
     );
