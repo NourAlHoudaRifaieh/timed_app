@@ -2,7 +2,9 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timed_app/api_service.dart';
+import 'package:timed_app/widgets/custom_elevated_button.dart';
 import 'package:timed_app/widgets/custom_form_field.dart';
 import 'main_page.dart';
 import 'package:intl/intl.dart';
@@ -32,6 +34,32 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    _loadSavedUsername();
+  }
+
+  void _loadSavedUsername() async{
+    final prefs = await SharedPreferences.getInstance();
+    final rememberMe = prefs.getBool('remember_me') ?? false;
+    if(rememberMe){
+      final savedUsername = prefs.getString('saved_username');
+      if(savedUsername != null){
+        String loginTime = DateFormat('dd/MM/yyy HH:mm').format(DateTime.now());
+        if(!mounted) return;
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context)=> MainPage(lastLogin: loginTime),)
+        );
+        return;
+      }
+    }
+
+    final savedUsername = prefs.getString('saved_username');
+    if(savedUsername != null){
+      setState(() {
+        _usernameController.text = savedUsername;
+        isChecked = true;
+      });
+    }
   }
 
   @override
@@ -107,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       width: double.infinity,
                       height: 45,
-                      child: ElevatedButton(
+                      child: CustomElevatedButton(
                           onPressed: ()async{
                             // DateTime loginTime = DateTime.now();
                             String loginTime = DateFormat('dd/MM/yyyy  HH:mm').format(DateTime.now());
@@ -123,6 +151,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 final success = await _apiService.saveLogin(enteredUser, enteredPass);
                                 if (!mounted) return;
                                 if (success) {
+                                  final prefs = await SharedPreferences.getInstance();
+                                  await prefs.setBool('remember_me', isChecked);
+                                  if(isChecked){
+                                    await prefs.setString('saved_username', enteredUser);
+                                  }else{
+                                    await prefs.remove('saved_username');
+                                  }
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
@@ -141,18 +176,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                             }
                           },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Colors.indigo,
-                            elevation: 5,
-                            shadowColor: Colors.indigo,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            )
-                          ),
-                          child: Text('Login',
-                            style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)
-                          ),
+                          text: 'Login',
+                          // style: ElevatedButton.styleFrom(
+                          //   foregroundColor: Colors.white,
+                          //   backgroundColor: Colors.indigo,
+                          //   elevation: 5,
+                          //   shadowColor: Colors.indigo,
+                          //   shape: RoundedRectangleBorder(
+                          //     borderRadius: BorderRadius.circular(15),
+                          //   )
+                          // ),
+                          // child: Text('Login',
+                          //   style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold)
+                          // ),
                       ),
                     ),
                     SizedBox(height:50),

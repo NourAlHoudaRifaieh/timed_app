@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timed_app/login_screen.dart';
 import 'package:timed_app/screens/gallery_screen.dart';
 import 'package:timed_app/screens/list_view_screen.dart';
@@ -77,6 +78,7 @@ class _MainPageState extends State<MainPage> {
             }
         ),
       ),
+      backgroundColor:  Colors.indigo.shade50,
       // body: _openPageBody(),
        body: Column(
          children: [
@@ -210,8 +212,13 @@ class _MainPageState extends State<MainPage> {
                   style: TextStyle(
                       fontSize:20,
                       color: _selectedIndex == 5 ? Colors.redAccent : Colors.black)),
-              onTap: (){
+              onTap: () async{
                 Navigator.pop(context);
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool('remember_me', false);
+                await prefs.remove('saved_username');
+
+                if(!context.mounted) return;
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context)=> LoginScreen()),
