@@ -16,6 +16,11 @@ class MyApp extends StatelessWidget {
       title: 'Timed Application',
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.white,
+        ),
+      ),
     );
   }
 }
